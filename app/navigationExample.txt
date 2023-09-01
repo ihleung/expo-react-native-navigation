@@ -1,11 +1,52 @@
 import React, { useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Platform, Button } from "react-native";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
+import { createDrawerNavigator } from "react-navigation-drawer";
+
+const Home = function ({ navigation }) {
+  return (
+    <View>
+      <Text>Home Content</Text>
+    </View>
+  );
+};
+
+Home.navigationOptions = {
+  title: "Home",
+};
+
+const Settings = function ({ navigation }) {
+  return (
+    <View>
+      <Text>Settings Content</Text>
+    </View>
+  );
+};
+
+Settings.navigationOptions = {
+  title: "Settings",
+};
+
+const { createNavigator } = Platform.select({
+  ios: { createNavigator: createBottomTabNavigator },
+  android: { createNavigator: createDrawerNavigator },
+  default: { createNavigator: createStackNavigator },
+});
 
 const ItemList = function ({ navigation, screenProps: { items } }) {
   return (
+    /*<View>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Settings"
+        onPress={() => navigation.navigate("Settings")}
+      />
+    </View>
+    */
     <View>
+      <Text>Item List</Text>
       <Button
         title={`First Item (${items.first})`}
         onPress={() =>
@@ -72,7 +113,10 @@ Details.navigationOptions = ({
 };
 
 const Navigator = createAppContainer(
-  createStackNavigator({ ItemList, Details }, { initialRouteName: "ItemList" })
+  createNavigator(
+    { Home, ItemList, Details, Settings },
+    { initialRouteName: "Home" }
+  )
 );
 
 export default function App() {
